@@ -1,0 +1,10 @@
+const express=require('express')
+const router = express.Router()
+const doctorController=require('../controller/doctor/doctorController')
+router.post('/login',doctorController.doctorLogin)
+router.get('/getDoctor/:id',doctorController.singleDoctor)
+router.patch('/changePassword', doctorController.changePassword)
+router.get('/getSingleBooking/:id',doctorController.getSingleBooking)
+router.get('/getBookings',doctorController.getBookings)
+router.post('/prescription',doctorController.prescriptionAdding)
+module.exports = router
