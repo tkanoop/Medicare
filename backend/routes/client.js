@@ -7,7 +7,10 @@ const clientController=require('../controller/client/clientController')
 router.post('/login',clientController.login)
 router.post('/addClient',clientController.addClient)
 router.post('/submit',clientController.submit)
-
+router.get('/getUser',clientController.getUser)
+router.get('/getBooking',clientController.getBooking)
+router.get('/cancelBooking/:id',clientController.cancelBooking)
+router.get('/getPrescription/:id',clientController.getPrescription)
 
 router.use(requireAuth)
 // router.use(blockClient)

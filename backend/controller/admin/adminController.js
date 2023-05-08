@@ -5,6 +5,7 @@ const Client = require("../../models/client")
 const Admin = require("../../models/admin")
 const Booking = require("../../models/booking")
 const jwt=require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 const client = require("../../models/client");
 const createToken = (_id) => {
   return jwt.sign({_id},process.env.SECRET,{expiresIn:'3d'})
@@ -40,7 +41,7 @@ module.exports = {
         console.log(credentials._id);
         const token=createToken(credentials._id)
         console.log(token);
-        res.status(201).json({status:true,token})
+        res.status(201).json({token})
       }else{
         res.json({error:"Incorrect password or email"})
         console.log("error");
@@ -79,6 +80,10 @@ module.exports = {
           console.log("otp mailed");
         }
       });
+      const passwordHash = await bcrypt.hash(mailer.OTP, 10);
+
+
+
       const newDoctor = new Doctor({
         name: req.body.name,
         department: req.body.department,
@@ -88,12 +93,9 @@ module.exports = {
         languages: req.body.language,
         hospitals: req.body.hospital,
         image: req.file.path,
-        password:mailer.OTP
+        password:passwordHash
       });
       await newDoctor.save();
-
-   
-
       res.status(201).json({ message: "Successfully Mail send" });
     } catch (error) {}
   },
@@ -181,6 +183,14 @@ blockClient: async(req,res)=>{
     res.json({success:true})
   }
 },
+getPrescription:async(req,res) =>{
+    
+  const id =req.params.id
+  console.log(id);
+  const prescription = await Prescription.findOne({bookingid:id})
+  console.log("hghgfhf"+prescription);
+  res.json(prescription)
+},
 blockClient: async(req,res)=>{
   const id=req.params.id
   const client= await Client.findById({_id:id})
@@ -195,7 +205,7 @@ blockClient: async(req,res)=>{
   }
 },
 cancelbooking: async(req,res)=>{
-  console.log("hii");
+
   const id=req.params.id
   const booking= await Booking.findById({_id:id})
  
